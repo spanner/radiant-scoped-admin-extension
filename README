@@ -1,0 +1,12 @@
+= Scoped Admin
+
+This extends (spanner's forked version of) multi_site to bring more
+scoping into the admin interface. Layouts, snippets and users are
+all site-scoped at a very low level, so a normal user will see the normal 
+radiant interface with no idea that there are other sites in the same
+system. Only the admin user will be able to choose another site in the 
+admin interface: when they do, they move to a completely separate set of
+pages, layouts, snippets and users.
+
+The site-choice strapline - here changed a bit - now appears at the top of
+any site-scoped admin index view, as well as the main page index view.
