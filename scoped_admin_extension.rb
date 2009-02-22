@@ -16,10 +16,11 @@ class ScopedAdminExtension < Radiant::Extension
     Layout.send :is_site_scoped
     Snippet.send :is_site_scoped
     User.send :is_site_scoped
+    User.send :include, ScopedAdmin::User
 
     admin.layouts.index.add :top, "site_subnav"
-    admin.snippets.index.add :top, "site_subnav"
     admin.users.index.add :top, "site_subnav"
+    admin.snippets.index.add :top, "site_subnav"
   end
   
   def deactivate

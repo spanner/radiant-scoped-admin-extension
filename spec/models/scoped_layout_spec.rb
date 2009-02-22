@@ -23,6 +23,18 @@ describe Layout do
       layout = Layout.create(:name => 'test layout', :content => "blah")
       layout.site.should == sites(:site1)
     end
+
+    it "should be invalid if its name is already in use on this site" do
+      layout = Layout.new(:name => 'Site 1 Layout', :content => "blah")
+      layout.valid?.should_not be_true
+      layout.errors.should_not be_nil
+      layout.errors.on(:name).should_not be_nil
+    end
+
+    it "should be valid if its name is already in use on another site" do
+      layout = Layout.new(:name => 'Site 2 Layout', :content => "blah")
+      layout.valid?.should be_true
+    end
   end
   
   describe "retrieval" do
@@ -39,7 +51,7 @@ describe Layout do
       # this is all tested in multi_site/scoped_finder but never mind
       layout = Layout.find_by_name('Site 1 Layout')
       layout.should be_nil
-      lambda { Layout.find(layout_id(:layout1)) }.should raise_error ActiveRecord::RecordNotFound
+      lambda { Layout.find(layout_id(:layout1)) }.should raise_error(ActiveRecord::RecordNotFound)
     end
   end
     
