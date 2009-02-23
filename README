@@ -9,4 +9,15 @@ admin interface: when they do, they move to a completely separate set of
 pages, layouts, snippets and users.
 
 The site-choice strapline - here changed a bit - now appears at the top of
-any site-scoped admin index view, as well as the main page index view.
+all the site-scoped admin index views, as well as the main page index view.
+
+###Still to do
+
+This is at a very early stage. Next up:
+
+* scoped settings
+* scoped paperclipped
+* site passed around in navigation
+* site-choice as dropdown
+
+See also http://github.com/spanner/radiant-multi-site-extension

@@ -17,3 +17,21 @@
 #sites
   - Site.find(:all).each do |site|
     = link_to site.name, admin_pages_path(:root => site.homepage), :class => (@site == site ? 'fg' : 'bg')
+
+- if Radiant::Config['multi_site.scoped?']
+  - content_for :page_scripts do
+    :plain
+      SiteMap.prototype.toggleBranch = function(row, img) {
+        this.expandedRows = [];
+        this.saveExpandedCookie();
+        var id = row.id.split("-").last();
+        window.location = <%= admin_pages_path.to_json %> + "?root=" + id;
+      };
+  - if @homepage
+    %p#breadcrumbs
+      - [@homepage, @homepage.ancestors].flatten.reverse.each do |page|
+        - if page != @homepage
+          = link_to page.title, admin_pages_path(:root => page.id)
+          &gt;
+        - else
+          %em= page.title
