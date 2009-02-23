@@ -1,0 +1,20 @@
+- content_for :page_css do
+  :sass
+    #content
+      padding-top: 2.25em
+      position: relative
+    #sites 
+      position: absolute
+      top: 0
+      left: 0
+      font-size: 80%
+      line-height: 2em
+      padding-left: 1.5em
+      padding-top: 0.25em
+      a, a:visited
+        color: black
+        margin-right: 10px
+#sites
+  - Site.find(:all).each do |site|
+    - name = (@site == site) ? "<strong>#{site.name}</strong>" : site.name
+    = link_to name, admin_pages_path(:root => site.homepage)

@@ -15,9 +15,9 @@ class ScopedAdminExtension < Radiant::Extension
   def activate
     Layout.send :is_site_scoped
     Snippet.send :is_site_scoped
-    # User.send :is_site_scoped
     User.send :include, ScopedAdmin::User
-    Admin::ResourceController.send :include, ScopedAdmin::ResourceController
+    
+    Admin::ResourceController.send :include, ScopedAdmin::ScopedController
 
     admin.layouts.index.add :top, "site_subnav"
     admin.users.index.add :top, "site_subnav"
