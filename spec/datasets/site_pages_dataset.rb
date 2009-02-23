@@ -9,5 +9,6 @@ class SitePagesDataset < Dataset::Base
       create_page "Child2OfHome2"
       create_page "Child3OfHome2"
     end
+    create_page "Home3"
   end
 end

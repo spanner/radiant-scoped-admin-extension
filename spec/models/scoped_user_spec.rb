@@ -26,10 +26,10 @@ describe User do
       Page.current_site = sites(:site2)
     end
     it "should be scoped to the current site" do
-      User.count(:all).should == 2
+      User.count(:all).should == 4
       user = User.find(:first)
       user.should_not be_nil
-      user.name.should == 'admin2'
+      user.name.should == 'Admin'
     end
     it "should not return a user from another site" do
       # this is all tested in multi_site/scoped_finder but never mind

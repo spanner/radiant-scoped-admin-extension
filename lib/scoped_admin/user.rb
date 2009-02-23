@@ -1,28 +1,22 @@
 module ScopedAdmin
   
   module User
-
     def self.included(base)
       base.extend ClassMethods
+      base.is_site_scoped
       class << base
-        alias_method_chain :authenticate, :foreign_admin
+        alias_method_chain :scope_condition, :admin
       end
-
     end
   
     module ClassMethods
 
-      def authenticate_with_foreign_admin(login, password)
-        # we have to dig a bit deeper to get around the site filter
-        users = find_every_without_site(:conditions => [ "login = ? AND admin = 1", login], :limit => 1)
-        user = users.first
-        if !user.nil? && user.authenticated?(password)
-          user
-        else
-          authenticate_without_foreign_admin(login, password)
-        end
+      # user works slightly differently, in that admin users are available to all sites.
+
+      def scope_condition_with_admin
+        "users.site_id = #{current_site!.id} OR users.admin = 1"
       end
-    
+
     end
   end
 end
