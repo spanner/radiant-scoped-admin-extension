@@ -19,9 +19,9 @@ class ScopedAdminExtension < Radiant::Extension
     
     Admin::ResourceController.send :include, ScopedAdmin::ScopedController
     
-    admin.users.index.add :top, "site_subnav"
-    admin.layouts.index.add :top, "site_subnav"
-    admin.snippets.index.add :top, "site_subnav"
+    admin.users.index.add :top, "admin/shared/site_jumper"
+    admin.layouts.index.add :top, "admin/shared/site_jumper"
+    admin.snippets.index.add :top, "admin/shared/site_jumper"
 
     admin.users.edit.add :form, "choose_site", :after => "edit_roles" 
     admin.layouts.edit.add :form, "choose_site", :before => "edit_timestamp" 

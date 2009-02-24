@@ -40,15 +40,32 @@ describe Admin::SnippetsController do
         get :index, :site => site_id(:site2)
         Page.current_site.should == sites(:site2)
       end
+      
+      it "should set a site_id cookie" do
+        @cookies = {}
+        controller.stub!(:cookies).and_return(@cookies)
+        @cookies.should_receive(:[]=) do |name,content|
+          name.should eql(:site_id)
+          content[:value].should == site_id(:site2).to_s
+        end
+        get :index, :site => site_id(:site2)
+      end
     end
     
     describe "with a root parameter" do
-      before do
-        get :index, :root => page_id(:home2)
-      end
       it "should set current_site to the site of that root page" do
+        get :index, :root => page_id(:home2)
         Page.current_site.should == sites(:site2)
       end
+    end
+    it "should set a site_id cookie" do
+      @cookies = {}
+      controller.stub!(:cookies).and_return(@cookies)
+      @cookies.should_receive(:[]=) do |name,content|
+        name.should eql(:site_id)
+        content[:value].should == site_id(:site2).to_s
+      end
+      get :index, :root => page_id(:home2)
     end
   end
 
@@ -68,6 +85,12 @@ describe Admin::SnippetsController do
       it "should ignore them" do
         get :index, :site => site_id(:site2), :root => page_id(:home2)
         Page.current_site.should == sites(:default)
+      end
+      it "should not set a site_id cookie" do
+        @cookies = {}
+        controller.stub!(:cookies).and_return(@cookies)
+        @cookies.should_not_receive(:[]=)
+        get :index, :root => page_id(:home2)
       end
     end
   end
@@ -97,7 +120,6 @@ describe Admin::SnippetsController do
     end
 
     describe "with a site parameter" do
-      
       it "should set current_site to that site" do
         get :index, :site => site_id(:site2)
         Page.current_site.should == sites(:site2)
@@ -113,16 +135,5 @@ describe Admin::SnippetsController do
         get :index, :site => site_id(:site2)
       end
     end
-
   end
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 end

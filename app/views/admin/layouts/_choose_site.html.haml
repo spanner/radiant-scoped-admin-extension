@@ -1,4 +1,4 @@
-- if current_user.admin?
+- unless current_user.site
   %p{:style => 'float: left; margin-right: 32px'}
     %label{:for=>"layout_site_id", :Class => "admin_only"}
       Site
