@@ -1,0 +1,19 @@
+- content_for :page_css do
+  :sass
+    #content
+      padding-top: 2.25em
+      position: relative
+    #sites 
+      position: absolute
+      top: 0
+      left: 0
+      font-size: 80%
+      line-height: 2em
+      padding-left: 1.5em
+      padding-top: 0.25em
+      a, a:visited
+        color: black
+        margin-right: 10px
+#sites
+  - Site.find(:all).each do |site|
+    = link_to site.name, admin_users_path(:site => site.id), :class => (@site == site ? 'fg' : 'bg')

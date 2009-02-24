@@ -1,0 +1,8 @@
+- if current_user.admin?
+  %tr
+    %th.label
+      %label{:for=>"user_admin"} Can edit site
+    %td.field{:style => 'text-align: left;'}
+      = select :user, :site_id, [['<any>', '']] + Site.find(:all).map { |s| [s.name, s.id] }
+    %td.help
+      Normal users are confined to their own site. Admin users can work on any site in the system.
