@@ -84,12 +84,36 @@ describe Admin::SnippetsController do
       end
     end
   
-    describe "with site parameters" do
-      it "should ignore them" do
-        get :index, :site => site_id(:site2), :root => page_id(:home2)
-        Page.current_site.should == sites(:default)
+    describe "with a site cookie" do
+      before do
+        @cookies = { :site_id => site_id(:site2) }
+        controller.should_receive(:cookies).at_least(:once).and_return(@cookies)
+      end
+      
+      it "should set current_site to that site" do
+        get :index
+        Page.current_site.should == sites(:site2)
       end
     end
+
+    describe "with a site parameter" do
+      
+      it "should set current_site to that site" do
+        get :index, :site => site_id(:site2)
+        Page.current_site.should == sites(:site2)
+      end
+
+      it "should set a site_id cookie" do
+        @cookies = {}
+        controller.stub!(:cookies).and_return(@cookies)
+        @cookies.should_receive(:[]=) do |name,content|
+          name.should eql(:site_id)
+          content[:value].should == site_id(:site2).to_s
+        end
+        get :index, :site => site_id(:site2)
+      end
+    end
+
   end
   
   

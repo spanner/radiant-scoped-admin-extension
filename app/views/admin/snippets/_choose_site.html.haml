@@ -2,4 +2,4 @@
   %p{:style => 'float: left; margin-right: 32px'}
     %label{:for=>"snippet_site_id", :Class => "admin_only"}
       Site
-    = select :snippet, :site_id, [['<shared>', '']] + Site.find(:all).map { |s| [s.name, s.id] }
+    = select :snippet, :site_id, Site.find(:all).map { |s| [s.name, s.id] }
