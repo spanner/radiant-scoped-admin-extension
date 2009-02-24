@@ -15,9 +15,9 @@ describe User do
   end
 
   describe "creation" do
-    it "should assign to the current site" do
+    it "should not assign to the current site by default" do
       user = User.create(:name => 'test user', :login => 'testy', :email => 'testy@spanner.org', :password => 'password', :password_confirmation => 'password')
-      user.site.should == sites(:site1)
+      user.site.should be_nil
     end
   end
   
@@ -25,8 +25,8 @@ describe User do
     before do
       Page.current_site = sites(:site2)
     end
-    it "should be scoped to the current site" do
-      User.count(:all).should == 4
+    it "should get users from the current site and any without a site" do
+      User.count(:all).should == 9
       user = User.find(:first)
       user.should_not be_nil
       user.name.should == 'Admin'
@@ -38,34 +38,33 @@ describe User do
       lambda { User.find(user_id(:user1)) }.should raise_error(ActiveRecord::RecordNotFound)
     end
   end
-      
-  describe "with admin marker" do
-    it "should authenticate at its own site" do
-      Page.current_site = sites(:site2)
-      user = User.authenticate('admin2', 'password')
-      user.should_not be_nil
-      user.should == users(:admin2)
+
+  describe "on login" do
+    describe "with no site" do
+      it "should authenticate at any site" do
+        Page.current_site = sites(:site1)
+        user = User.authenticate('shareduser', 'password')
+        user.should_not be_nil
+        user.name.should == 'shareduser'
+        Page.current_site = sites(:site2)
+        user = User.authenticate('shareduser', 'password')
+        user.should_not be_nil
+        user.name.should == 'shareduser'
+      end
     end
-    it "should also authenticate at another site" do
-      Page.current_site = sites(:site1)
-      user = User.authenticate('admin2', 'password')
-      user.should_not be_nil
-      user.name.should == 'admin2'
+
+    describe "with a site" do
+      it "should authenticate at its own site" do
+        Page.current_site = sites(:site2)
+        user = User.authenticate('user2', 'password')
+        user.should_not be_nil
+        user.should == users(:user2)
+      end
+      it "should not authenticate at another site" do
+        Page.current_site = sites(:site1)
+        user = User.authenticate('user2', 'password')
+        user.should be_nil
+      end
     end
   end
-
-  describe "without admin marker" do
-    it "should authenticate at its own site" do
-      Page.current_site = sites(:site2)
-      user = User.authenticate('user2', 'password')
-      user.should_not be_nil
-      user.should == users(:user2)
-    end
-    it "should not authenticate at another site" do
-      Page.current_site = sites(:site1)
-      user = User.authenticate('user2', 'password')
-      user.should be_nil
-    end
-  end
-
 end

@@ -13,20 +13,19 @@ class ScopedAdminExtension < Radiant::Extension
   # end
   
   def activate
-    Layout.send :include, ScopedAdmin::ScopedModel
-    Snippet.send :include, ScopedAdmin::ScopedModel
-    User.send :include, ScopedAdmin::ScopedModel
+    Layout.send :is_site_scoped, :shareable => false
+    Snippet.send :is_site_scoped, :shareable => false
+    User.send :is_site_scoped, :shareable => true
+    
     Admin::ResourceController.send :include, ScopedAdmin::ScopedController
     
-    [:layouts, :users, :snippets].each do |resource|
-      admin.send(resource).index.add :top, "site_subnav"
-    end
+    admin.users.index.add :top, "site_subnav"
+    admin.layouts.index.add :top, "site_subnav"
+    admin.snippets.index.add :top, "site_subnav"
 
     admin.users.edit.add :form, "choose_site", :after => "edit_roles" 
     admin.layouts.edit.add :form, "choose_site", :before => "edit_timestamp" 
     admin.snippets.edit.add :form, "choose_site", :before => "edit_filter" 
-
-
   end
   
   def deactivate

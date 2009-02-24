@@ -20,9 +20,9 @@ describe Admin::SnippetsController do
     ActionController::Routing::Routes.reload
   end
   
-  describe "for an admin user" do
+  describe "for an global admin user" do
     before do
-      login_as(:admin1)
+      login_as(:sharedadmin)
     end
     
     describe "with a simple request" do
@@ -52,9 +52,8 @@ describe Admin::SnippetsController do
     end
   end
 
-  describe "for a non-admin user" do
+  describe "for a local user" do
     before do
-      Page.current_site = sites(:default)
       login_as :anyone
     end
     
@@ -72,4 +71,34 @@ describe Admin::SnippetsController do
       end
     end
   end
+  
+  describe "for a global non-admin user" do
+    before do
+      login_as :shareduser
+    end
+    
+    describe "with a simple request" do
+      it "should set current_site" do
+        get :index
+        Page.current_site.should == sites(:default)
+      end
+    end
+  
+    describe "with site parameters" do
+      it "should ignore them" do
+        get :index, :site => site_id(:site2), :root => page_id(:home2)
+        Page.current_site.should == sites(:default)
+      end
+    end
+  end
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 end

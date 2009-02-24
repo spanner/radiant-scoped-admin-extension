@@ -7,6 +7,8 @@ class SiteUsersDataset < Dataset::Base
     create_user "admin1", :site => sites(:site1), :admin => true
     create_user "admin2", :site => sites(:site2), :admin => true
     create_user "anyone", :site => sites(:default), :admin => false
+    create_user "shareduser"
+    create_user "sharedadmin", :admin => true
   end
 
 end
