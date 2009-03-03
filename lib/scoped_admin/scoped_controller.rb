@@ -33,7 +33,6 @@ module ScopedAdmin
     end
     
     def site_from_cookie
-      logger.warn "@@@ #{self}.site_from_cookie"
       if !cookies[:site_id].blank? && site = Site.find(cookies[:site_id])
         site
       end
