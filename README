@@ -8,16 +8,29 @@ system. Only the admin user will be able to choose another site in the
 admin interface: when they do, they move to a completely separate set of
 pages, layouts, snippets and users.
 
-The site-choice strapline - here changed a bit - now appears at the top of
-all the site-scoped admin index views, as well as the main page index view.
+###Installation
 
-###Still to do
+Reader requires the spanner fork of multi_site, but apart from that it declares its dependencies. At the moment Ray doesn't know about this extension so you probably want to do something like this:
 
-This is at a very early stage. Next up:
+  rake ray:extension:install name="multi-site" hub="spanner"
+  git submodule add git://github.com/spanner/radiant-scoped-admin-extension.git vendor/extensions/scoped_admin
+  rake radiant:extensions:scoped_admin:migrate
+
+If you've got a lot of extensions to install, it's a good idea to install everything else first, do the migrations, make sure it's working and then install scoped_admin last. It will probably cause tests to fail in other extensions, for example, by making their objects invisible in the database.
+
+###Next
+
+This is getting fairly solid but there are still a few awkwardnesses for 
+the administrator who wants to get at resources on a site other than the
+one she's logged into. It nearly all works. Possibly next:
 
 * scoped settings
 * scoped paperclipped
-* site passed around in navigation
-* site-choice as dropdown
 
 See also http://github.com/spanner/radiant-multi-site-extension
+
+###Author & Copyright
+
+William Ross, for spanner. will at spanner.org
+Copyright 2009 spanner ltd
+released under the same terms as Rails and/or Radiant
