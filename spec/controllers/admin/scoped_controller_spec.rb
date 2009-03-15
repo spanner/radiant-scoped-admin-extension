@@ -13,14 +13,13 @@ describe Admin::SnippetsController do
     map = ActionController::Routing::RouteSet::Mapper.new(ActionController::Routing::Routes)
     map.connect ':controller/:action/:id'
     ActionController::Routing::Routes.named_routes.install
-    
   end
    
   after do
     ActionController::Routing::Routes.reload
   end
   
-  describe "for an global admin user" do
+  describe "for a global admin user" do
     before do
       login_as(:sharedadmin)
     end
@@ -30,14 +29,14 @@ describe Admin::SnippetsController do
         get :index
       end
       
-      it "should set current_site" do
+      it "should set current_site to the site logged into" do
         Page.current_site.should == sites(:default)
       end
     end
     
     describe "with a site parameter" do
       it "should set current_site to that site" do
-        get :index, :site => site_id(:site2)
+        get :index, :site_id => site_id(:site2)
         Page.current_site.should == sites(:site2)
       end
       
@@ -48,24 +47,59 @@ describe Admin::SnippetsController do
           name.should eql(:site_id)
           content[:value].should == site_id(:site2).to_s
         end
-        get :index, :site => site_id(:site2)
+        get :index, :site_id => site_id(:site2)
       end
     end
+  end
+
+  describe "for a local admin user" do
+    before do
+      @host = 'site2.domain.com'
+      @site = sites(:default)
+      @cookies = {}
+      controller.request.stub!(:host).and_return(@host)
+      controller.stub!(:cookies).and_return(@cookies)
+      controller.set_current_site
+    end
     
-    describe "with a root parameter" do
-      it "should set current_site to the site of that root page" do
-        get :index, :root => page_id(:home2)
+    describe "at the right site" do
+      before do
+        login_as(:admin2)
+        get :index
+      end
+      
+      it "should allow access" do
+        response.should be_success
+        response.should render_template('index')
+      end
+
+      it "should set current_site" do
         Page.current_site.should == sites(:site2)
       end
     end
-    it "should set a site_id cookie" do
-      @cookies = {}
-      controller.stub!(:cookies).and_return(@cookies)
-      @cookies.should_receive(:[]=) do |name,content|
-        name.should eql(:site_id)
-        content[:value].should == site_id(:site2).to_s
+    
+    describe "at the wrong site" do      
+      before do
+        lambda{login_as(:admin1)}.should raise_error(ActiveRecord::RecordNotFound)
+        get :index
       end
-      get :index, :root => page_id(:home2)
+      it "should redirect to login" do
+        response.should be_redirect
+        response.should redirect_to(login_url)
+      end
+    end
+    
+    describe "with a site parameter" do
+      it "should ignore it" do
+        get :index, :site => site_id(:default)
+        Page.current_site.should == sites(:site2)
+      end
+      it "should not set a site_id cookie" do
+        @cookies = {}
+        controller.stub!(:cookies).and_return(@cookies)
+        @cookies.should_not_receive(:[]=)
+        get :index, :site => site_id(:default)
+      end
     end
   end
 
@@ -85,12 +119,6 @@ describe Admin::SnippetsController do
       it "should ignore them" do
         get :index, :site => site_id(:site2), :root => page_id(:home2)
         Page.current_site.should == sites(:default)
-      end
-      it "should not set a site_id cookie" do
-        @cookies = {}
-        controller.stub!(:cookies).and_return(@cookies)
-        @cookies.should_not_receive(:[]=)
-        get :index, :root => page_id(:home2)
       end
     end
   end
@@ -121,7 +149,7 @@ describe Admin::SnippetsController do
 
     describe "with a site parameter" do
       it "should set current_site to that site" do
-        get :index, :site => site_id(:site2)
+        get :index, :site_id => site_id(:site2)
         Page.current_site.should == sites(:site2)
       end
 
@@ -132,7 +160,7 @@ describe Admin::SnippetsController do
           name.should eql(:site_id)
           content[:value].should == site_id(:site2).to_s
         end
-        get :index, :site => site_id(:site2)
+        get :index, :site_id => site_id(:site2)
       end
     end
   end
