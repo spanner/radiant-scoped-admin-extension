@@ -1,16 +1,10 @@
 = Scoped Admin
 
-This extends (spanner's forked version of) multi_site to bring more
-scoping into the admin interface. Layouts, snippets and users are
-all site-scoped at a very low level, so a normal user will see the normal 
-radiant interface with no idea that there are other sites in the same
-system. Only the admin user will be able to choose another site in the 
-admin interface: when they do, they move to a completely separate set of
-pages, layouts, snippets and users.
+This is a simple add-on that scopes users, snippets and layouts to sites. There's very little to it but it requires spanner's fork of multi_site. That version includes a routine to apply site scope at the ActiveRecord level, effectively making invisible anything that is out of scope. All that remains is to provide a few admin functions for those users who can see everything.
 
 ###Installation
 
-Reader requires the spanner fork of multi_site, but apart from that it declares its dependencies. At the moment Ray doesn't know about this extension so you probably want to do something like this:
+Scoped admin requires the spanner fork of multi_site, but apart from that it declares its dependencies. At the moment Ray doesn't know about this extension so you probably want to do something like this:
 
   rake ray:extension:install name="multi-site" hub="spanner"
   git submodule add git://github.com/spanner/radiant-scoped-admin-extension.git vendor/extensions/scoped_admin
@@ -20,14 +14,14 @@ If you've got a lot of extensions to install, it's a good idea to install everyt
 
 ###Next
 
-This is getting fairly solid but there are still a few awkwardnesses for 
-the administrator who wants to get at resources on a site other than the
-one she's logged into. It nearly all works. Possibly next:
+Everything works now, as far as I know, but the low-level scoping means some awkwardness when you move between sites. An administrator can move a user from one site to another with the dropdown on the edit-user page, for example, but the effect will just be to make that user disappear until you jump to the other destination site to see if she arrived. That needs to be improved, or at least better reported.
 
-* scoped settings
-* scoped paperclipped
+I would also like users to have_and_belong_to_many sites, but that's going to take a bit more administration and I'll probably need to introduce the concept of a master site for each installation where you can set site and user parameters. That is under development, as radiant-host-extension, and will probably happen separately to this simple demonstration.
 
-See also http://github.com/spanner/radiant-multi-site-extension
+###See also 
+
+  http://github.com/spanner/radiant-multi-site-extension
+  http://github.com/spanner/radiant-paperclipped_multisite-extension
 
 ###Author & Copyright
 
