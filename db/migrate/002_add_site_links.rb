@@ -1,8 +1,8 @@
 class AddSiteLinks < ActiveRecord::Migration
   def self.up
     default = Site.catchall
-    [Layout, Snippet, User].each do |klass|
-      klass.find_by_site_id(nil).each do |thing| 
+    [:layout, :snippet, :user].each do |klass|
+      klass.to_s.classify.constantize.find(:all, :conditions => 'site_id IS NULL').each do |thing| 
         thing.site = default
         thing.save
       end
