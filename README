@@ -1,6 +1,6 @@
 = Scoped Admin
 
-This is a simple add-on that scopes users, snippets and layouts to sites. There's very little to it but it requires spanner's fork of multi_site. That version includes a routine to apply site scope at the ActiveRecord level, effectively making invisible anything that is out of scope. All that remains is to provide a few admin functions for those users who can see everything.
+This is a simple add-on that scopes users, snippets and layouts to sites. There's very little to it but it requires spanner's fork of multi_site. That version includes a routine to apply site scope at the ActiveRecord level, effectively making invisible anything that is out of scope. All that remains is to provide a few admin functions for those users who can jump from one site to another.
 
 ###Installation
 
@@ -14,9 +14,9 @@ If you've got a lot of extensions to install, it's a good idea to install everyt
 
 ###Next
 
-Everything works now, as far as I know, but the low-level scoping means some awkwardness when you move between sites. An administrator can move a user from one site to another with the dropdown on the edit-user page, for example, but the effect will just be to make that user disappear until you jump to the other destination site to see if she arrived. That needs to be improved, or at least better reported.
+Everything works now, as far as I know, but the low-level scoping means some awkwardness when you move between sites. An administrator can move a user from one site to another with the dropdown on the edit-user page, for example, but the effect will just be to make that user disappear until you jump to the destination site to see that she arrived. That needs to be improved, or at least better reported.
 
-I would also like users to have_and_belong_to_many sites, but that's going to take a bit more administration and I'll probably need to introduce the concept of a master site for each installation where you can set site and user parameters. That is under development, as radiant-host-extension, and will probably happen separately to this simple demonstration.
+I would also like users to have_and_belong_to_many sites, but that's going to take a bit more administration and I'll probably need to introduce the concept of a master site for each installation where you can set site and user parameters. That's under development, as radiant-host-extension, and will probably happen separately to this simple demonstration.
 
 ###See also 
 

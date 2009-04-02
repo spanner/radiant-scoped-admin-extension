@@ -23,7 +23,6 @@ class ScopedAdminExtension < Radiant::Extension
     admin.users.index.add :top, "admin/shared/site_jumper"
     admin.layouts.index.add :top, "admin/shared/site_jumper"
     admin.snippets.index.add :top, "admin/shared/site_jumper"
-
   end
   
 end
