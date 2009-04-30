@@ -11,7 +11,7 @@ class ScopedAdminExtension < Radiant::Extension
   # the only complications come from allowing shared users to switch between sites
     
   def activate
-    Layout.send :is_site_scoped, :shareable => false
+    Layout.send :is_site_scoped, :shareable => true
     Snippet.send :is_site_scoped, :shareable => false
     User.send :is_site_scoped, :shareable => true
     ApplicationHelper.send :include, ScopedHelper

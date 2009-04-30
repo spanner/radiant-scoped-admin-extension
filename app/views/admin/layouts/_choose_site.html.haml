@@ -2,4 +2,6 @@
   %p{:style => 'float: left; margin-right: 32px'}
     %label{:for=>"layout_site_id", :Class => "admin_only"}
       Site
-    = select :layout, :site_id, Site.find(:all).map { |s| [s.name, s.id] }
+    - sites = Site.find(:all).map { |s| [s.name, s.id] }
+    - sites.push(['<shared>' => '']) if Layout.shareable
+    = select :layout, :site_id, sites
