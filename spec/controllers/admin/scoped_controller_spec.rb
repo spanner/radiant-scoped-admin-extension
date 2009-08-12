@@ -1,134 +1,58 @@
 require File.dirname(__FILE__) + "/../../spec_helper"
 
-# class StubController < Admin::ResourceController
-#   # include ScopedAdmin::ResourceController
-#   def index; end
-#   def rescue_action(e) raise e end
-# end
-
 describe Admin::SnippetsController do
   dataset :site_users
 
   before do
-    map = ActionController::Routing::RouteSet::Mapper.new(ActionController::Routing::Routes)
-    map.connect ':controller/:action/:id'
-    ActionController::Routing::Routes.named_routes.install
+    Page.current_site = sites(:site2)
   end
-   
-  after do
-    ActionController::Routing::Routes.reload
+
+  describe "a local user" do
+    before do
+      login_as(:user2)
+    end
+
+    it "should be able to access her site" do
+      get :index
+      response.should be_success
+      response.should render_template('index')
+    end
+  
+    it "should not be able to access another site" do
+      Page.current_site = sites(:site1)
+      get :index
+      response.should be_redirect
+      response.should redirect_to(login_url)
+    end
   end
   
-  describe "for a global admin user" do
+  describe "a global user" do
     before do
-      login_as(:sharedadmin)
+      login_as(:shareduser)
     end
     
-    describe "with a simple request" do
-      before do
-        get :index
-      end
-      
-      it "should set current_site to the site logged into" do
-        Page.current_site.should == sites(:default)
-      end
+    it "should be able to access any site" do
+      get :index
+      response.should be_success
+      response.should render_template('index')
     end
     
-    describe "with a site parameter" do
-      it "should set current_site to that site" do
-        get :index, :site_id => site_id(:site2)
-        Page.current_site.should == sites(:site2)
+    describe "submitting a site_id parameter" do
+      before do 
+        get :index, :site_id => site_id(:site1)
       end
-    end
-  end
-
-  describe "for a local admin user" do
-
-    before do
-      @site = sites(:site2)
-      @host = @site.base_domain
-      @cookies = {}
-      request.stub!(:host).and_return(@host)
-      controller.stub!(:cookies).and_return(@cookies)
-    end
-    
-    describe "at the right site" do
-      before do
-        lambda{login_as(:admin2)}.should_not raise_error(ActiveRecord::RecordNotFound)
-        get :index
-      end
-      
-      it "should allow access" do
+  
+      it "should be allowed access" do
         response.should be_success
         response.should render_template('index')
       end
-
-      it "should set current_site" do
-        Page.current_site.should == sites(:site2)
+      
+      it "should see the right site" do
+        Page.current_site.should == sites(:site1)
       end
-    end
     
-    describe "at the wrong site" do      
-      before do
-        lambda{login_as(:admin1)}.should raise_error(ActiveRecord::RecordNotFound)
-        get :index
-      end
-      it "should redirect to login" do
-        response.should be_redirect
-        response.should redirect_to(login_url)
-      end
-    end
-    
-    describe "with a site parameter" do
-      it "should ignore it" do
-        get :index, :site => site_id(:default)
-        Page.current_site.should == sites(:site2)
-      end
-      it "should not set a site_id cookie" do
-        @cookies = {}
-        controller.stub!(:cookies).and_return(@cookies)
-        @cookies.should_not_receive(:[]=)
-        get :index, :site => site_id(:default)
-      end
-    end
-  end
-
-  describe "for a local user" do
-    before do
-      login_as :anyone
-    end
-    
-    describe "with a simple request" do
-      it "should set current_site" do
-        get :index
-        Page.current_site.should == sites(:default)
-      end
-    end
-  
-    describe "with site parameters" do
-      it "should ignore them" do
-        get :index, :site => site_id(:site2), :root => page_id(:home2)
-        Page.current_site.should == sites(:default)
-      end
-    end
-  end
-  
-  describe "for a global non-admin user" do
-    before do
-      login_as :shareduser
-    end
-    
-    describe "with a simple request" do
-      it "should set current_site" do
-        get :index
-        Page.current_site.should == sites(:default)
-      end
-    end
-  
-    describe "with a site parameter" do
-      it "should set current_site to that site" do
-        get :index, :site_id => site_id(:site2)
-        Page.current_site.should == sites(:site2)
+      it "should get the site id in the session" do
+        session[:site_id].should.to_s == site_id(:site1).to_s
       end
     end
   end
