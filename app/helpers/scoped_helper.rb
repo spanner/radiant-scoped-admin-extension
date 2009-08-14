@@ -3,11 +3,15 @@ module ScopedHelper
 
     base.module_eval do
       def title
-        current_site.name || Radiant::Config['admin.title'] || 'Radiant CMS'
+        t = current_site.name 
+        t = Radiant::Config['admin.title'] || 'Radiant CMS' if t.blank?
+        t
       end
 
       def subtitle
-        current_site.subtitle || Radiant::Config['admin.subtitle'] || 'publishing for small teams'
+        st = current_site.subtitle
+        st = Radiant::Config['admin.subtitle'] || 'publishing for small teams' if st.blank?
+        st
       end
       
       def site_jumper
