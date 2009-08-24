@@ -2,8 +2,8 @@
 # require_dependency 'application'
 
 class ScopedAdminExtension < Radiant::Extension
-  version "0.4"
-  description "Extends multi_site to site-scope users, snippets and layouts."
+  version "0.5"
+  description "Calls multi_site to site-scope users, snippets and layouts."
   url "http://spanner.org/radiant/scoped_admin"
   
   # the work here is done by multi_site
@@ -25,5 +25,4 @@ class ScopedAdminExtension < Radiant::Extension
       admin.snippets.index.add :top, "admin/shared/site_jumper"
     end
   end
-  
 end
