@@ -20,9 +20,6 @@ class ScopedAdminExtension < Radiant::Extension
       admin.users.edit.add :form, "choose_site", :after => "edit_roles" 
       admin.layouts.edit.add :form, "choose_site", :before => "edit_timestamp" 
       admin.snippets.edit.add :form, "choose_site", :before => "edit_filter" 
-      admin.users.index.add :top, "admin/shared/site_jumper"
-      admin.layouts.index.add :top, "admin/shared/site_jumper"
-      admin.snippets.index.add :top, "admin/shared/site_jumper"
     end
   end
 end

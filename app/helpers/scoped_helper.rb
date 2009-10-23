@@ -13,11 +13,7 @@ module ScopedHelper
         st = Radiant::Config['admin.subtitle'] || 'publishing for small teams' if st.blank?
         st
       end
-      
-      def site_jumper
-        render :partial => 'admin/shared/site_jumper'
-      end
-    end
 
+    end
   end
 end

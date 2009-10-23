@@ -3,13 +3,9 @@ require File.dirname(__FILE__) + "/../../spec_helper"
 describe Admin::SnippetsController do
   dataset :site_users
 
-  before do
-    Page.current_site = sites(:site2)
-  end
-
   describe "a local user" do
     before do
-      login_as(:user2)
+      login_as(:anyone)
     end
 
     it "should be able to access her site" do
@@ -19,8 +15,7 @@ describe Admin::SnippetsController do
     end
   
     it "should not be able to access another site" do
-      Page.current_site = sites(:site1)
-      get :index
+      get :index, :site_id => site_id(:site1)
       response.should be_redirect
       response.should redirect_to(login_url)
     end
